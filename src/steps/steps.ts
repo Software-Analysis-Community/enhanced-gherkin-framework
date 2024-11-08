@@ -28,8 +28,12 @@ export async function performAction(action: string, parameters: string[]) {
 }
 
 async function openPage(url: string) {
+    const isCI = process.env.CI === 'true';
     if (!browser) {
-        browser = await chromium.launch({ headless: false, slowMo: 500 });
+        browser = await chromium.launch({
+            headless: isCI, // В CI используем headless режим
+            slowMo: isCI ? 0 : 50,         // В CI не замедляем действия
+        });
         const context = await browser.newContext();
         page = await context.newPage();
     }
