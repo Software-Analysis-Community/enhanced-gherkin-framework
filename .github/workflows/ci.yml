@@ -1,0 +1,51 @@
+name: CI
+
+# События, при которых запускается рабочий процесс
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Матрица версий Node.js для тестирования
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+
+    steps:
+      # Проверка кода
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Установка выбранной версии Node.js
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Установка зависимостей
+      - name: Install dependencies
+        run: npm install
+
+      # Установка браузеров Playwright
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      # Запуск тестов
+      - name: Run tests
+        run: npm run test
+
+      # Сохранение артефактов (опционально)
+      - name: Upload test results
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: |
+            test-results/
+            screenshots/
+            videos/
+            trace.zip
