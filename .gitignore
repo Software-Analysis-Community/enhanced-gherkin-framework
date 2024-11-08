@@ -1,0 +1,99 @@
+# Node.js
+
+# Папка зависимостей
+node_modules/
+
+# Логи npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Файлы блокировки
+package-lock.json
+yarn.lock
+
+# Выходные директории
+dist/
+build/
+
+# TypeScript
+
+# Файлы информации о сборке
+*.tsbuildinfo
+
+# Playwright
+
+# Результаты тестов Playwright
+test-results/
+
+# Снимки экрана с ошибками
+screenshots/
+
+# Видео сессии тестов
+videos/
+
+# Логи трассировки
+trace.zip
+
+# WebStorm / IntelliJ IDEA
+
+# Папка настроек проекта
+.idea/
+
+# Файлы настроек модулей
+*.iml
+
+# Файлы рабочей среды IDE
+*.iws
+
+# Информация о запуске и конфигурации отладки
+.idea_modules/
+
+# Именные конфигурации
+runConfigurations/
+
+# MacOS
+
+.DS_Store
+
+# Windows
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+
+logs/
+*.log
+
+# Системные файлы
+
+.sass-cache/
+*.pid
+*.seed
+*.pid.lock
+
+# Git
+
+.git/
+.gitignore
+
+# Дополнительно (если используется)
+
+# Файлы отчетов покрытия кода
+coverage/
+
+# Файлы конфигурации среды
+.env
+.env.test
+.env.production
+
+# Темповые файлы
+
+temp/
+tmp/
+
+# Бэкапы
+*.bak
+*~
