@@ -1,44 +1,42 @@
 name: CI
 
-# События, при которых запускается рабочий процесс
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
-# Матрица версий Node.js для тестирования
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [16.x, 18.x, 20.x, 22.x]
 
     steps:
-      # Проверка кода
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Установка выбранной версии Node.js
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-      # Установка зависимостей
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.0
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
-      # Установка браузеров Playwright
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
 
-      # Запуск тестов
       - name: Run tests
-        run: npm run test
+        run: pnpm run test
 
-      # Сохранение артефактов (опционально)
       - name: Upload test results
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
