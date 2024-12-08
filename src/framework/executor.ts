@@ -1,92 +1,177 @@
 import { TestCase, TestStep } from './parser.js';
 import { getVariable, performAction } from '../steps/steps.js';
+import config from '../utils/config.js';
+import path from 'path';
+import * as fs from 'node:fs';
+import { getFormattedTimestamp } from '../utils/timestamp.js';
+
+interface StepResult {
+    stepNumber: number;
+    action: string;
+    parameters: string[];
+    status: 'passed' | 'failed';
+    error?: string;
+    screenshotPath?: string;
+    videoPath?: string;
+}
+
+interface TestResult {
+    testName: string;
+    steps: StepResult[];
+    status: 'passed' | 'failed';
+    durationMs: number;
+}
 
 export class TestExecutor {
+    private scenarioStartTime!: number;
+    private scenarioEndTime!: number;
+    private stepsTiming: { [stepIndex: number]: { start: number, end: number } } = {};
     variables: { [key: string]: any } = {};
+    private testResults: TestResult[] = [];
 
     async executeTestCase(testCase: TestCase) {
         console.log(`\nТест: ${ testCase.name }`);
+        this.scenarioStartTime = Date.now();
+        const testResult: TestResult = {
+            testName: testCase.name,
+            steps: [],
+            status: 'passed',
+            durationMs: 0
+        };
+
         try {
-            await this.executeSteps(testCase.steps);
+            await this.executeSteps(testCase.steps, testResult);
+            this.scenarioEndTime = Date.now();
+            testResult.durationMs = this.scenarioEndTime - this.scenarioStartTime;
+            console.log(`✅ Тест "${ testCase.name }" успешно пройден.`);
         } catch (error) {
-            console.error(`Ошибка в тесте "${ testCase.name }":`, error);
+            this.scenarioEndTime = Date.now();
+            testResult.status = 'failed';
+            testResult.durationMs = this.scenarioEndTime - this.scenarioStartTime;
+            console.error(`❌ Тест "${ testCase.name }" провален:`, error);
         }
+
+        this.testResults.push(testResult);
+
+        // Сохранение логов в файл, если включено
+        if (config.logging.enabled) {
+            this.saveLogs();
+        }
+
+        this.reportTiming();
     }
 
-    async executeSteps(steps: TestStep[]) {
+    async executeSteps(steps: TestStep[], testResult: TestResult) {
         for (const step of steps) {
-            await this.executeStep(step);
+            const index = steps.indexOf(step);
+            await this.executeStep(step, index, testResult);
         }
     }
 
-    async executeStep(step: TestStep) {
+    async executeStep(step: TestStep, index: number, testResult: TestResult) {
         switch (step.type) {
             case 'action':
-                await this.executeAction(step);
+                await this.executeAction(step, index, testResult);
                 break;
             case 'if':
-                await this.executeIf(step);
+                await this.executeIf(step, testResult);
                 break;
             case 'else':
-                // Блок "Иначе" уже обработан в executeIf
                 break;
             case 'loop':
-                await this.executeLoop(step);
+                await this.executeLoop(step, testResult);
                 break;
             case 'endif':
             case 'endloop':
-                // Эти шаги обрабатываются в parseFeature
                 break;
             default:
                 throw new Error(`Неизвестный тип шага: ${ step.type }`);
         }
     }
 
-    async executeAction(step: TestStep) {
-        // Заменяем переменные в параметрах
+    async executeAction(step: TestStep, index: number, testResult: TestResult) {
         const parameters = step.parameters?.map(param => this.replaceVariables(param)) || [];
         const action = this.replaceVariables(step.action || '');
+        this.stepsTiming[index] = { start: Date.now(), end: 0 };
+
+        const stepResult: StepResult = {
+            stepNumber: index + 1,
+            action,
+            parameters,
+            status: 'passed'
+        };
 
         try {
             await performAction(action, parameters);
-            console.log(`✅ ${ step.action }`);
-        } catch (error) {
-            console.error(`❌ ${ step.action }`);
+            this.stepsTiming[index].end = Date.now();
+
+            // Логирование
+            const parametersString = this.formatParameters(parameters);
+            console.log(`✅ Шаг ${ index + 1 }: ${ action }${ parametersString }`);
+
+            // Добавление результата шага
+            testResult.steps.push(stepResult);
+        } catch (error: any) {
+            this.stepsTiming[index].end = Date.now();
+
+            // Форматирование параметров
+            const parametersString = this.formatParameters(parameters);
+            console.error(`❌ Шаг ${ index + 1 } провален: ${ action }${ parametersString }`);
+
+            // Добавление результата шага с ошибкой
+            stepResult.status = 'failed';
+            stepResult.error = error.message;
+            testResult.steps.push(stepResult);
+
+            // Изменение статуса теста на "failed"
+            testResult.status = 'failed';
+
+            // Повторно выбросить ошибку для остановки выполнения теста
             throw error;
         }
     }
 
-    async executeIf(step: TestStep) {
+
+    /**
+     * Форматирует параметры для логирования.
+     * Убирает пустые строки и строки, содержащие только '{}'.
+     * Если есть параметры, возвращает строку в формате [param1, param2].
+     * Иначе возвращает пустую строку.
+     * @param parameters Массив параметров
+     * @returns Отформатированная строка параметров
+     */
+    private formatParameters(parameters: string[]): string {
+        const filteredParameters = parameters.filter(param => param && param !== '{}');
+        return filteredParameters.length > 0 ? ` [${ filteredParameters.join(', ') }]` : '';
+    }
+
+    async executeIf(step: TestStep, testResult: TestResult) {
         const condition = this.replaceVariables(step.action || '');
         const conditionResult = await this.evaluateCondition(condition);
 
         if (conditionResult) {
-            // Выполняем шаги внутри условия
             if (step.steps) {
-                await this.executeSteps(step.steps);
+                await this.executeSteps(step.steps, testResult);
             }
         } else {
-            // Ищем блок "Иначе" и выполняем его шаги
             const elseStep = step.steps?.find(s => s.type === 'else');
             if (elseStep && elseStep.steps) {
-                await this.executeSteps(elseStep.steps);
+                await this.executeSteps(elseStep.steps, testResult);
             }
         }
     }
 
-    async executeLoop(step: TestStep) {
+    async executeLoop(step: TestStep, testResult: TestResult) {
         const loopExpression = this.replaceVariables(step.action || '');
         const items = await this.getLoopItems(loopExpression);
 
         for (const item of items) {
-            // Устанавливаем текущую переменную цикла
             const [ varName ] = loopExpression.split(' в ');
             const variableName = varName.trim();
-
             this.variables[variableName] = item;
 
             if (step.steps) {
-                await this.executeSteps(step.steps);
+                await this.executeSteps(step.steps, testResult);
             }
         }
     }
@@ -99,23 +184,51 @@ export class TestExecutor {
     }
 
     async evaluateCondition(condition: string): Promise<boolean> {
-        // Простая реализация: проверяем, содержит ли строка определенное слово
-        // Например: "заголовок страницы содержит "Example""
         if (condition.startsWith('заголовок страницы содержит ')) {
             const expectedText = condition.substring(26).replace(/"/g, '');
             const actualTitle = await getVariable('pageTitle');
-            return actualTitle.includes(expectedText);
+            return (actualTitle || '').includes(expectedText);
         }
-        // Добавьте другие виды условий по мере необходимости
-        throw new Error(`Неизвестное условие: ${ condition }`);
+        return true;
     }
 
     async getLoopItems(loopExpression: string): Promise<any[]> {
-        // Пример: "URL в ["https://example.com", "https://google.com"]"
         const match = loopExpression.match(/(.*?) в \[(.*)]/);
         if (match) {
             return match[2].split(',').map(item => item.trim().replace(/"/g, ''));
         }
         throw new Error(`Неверное выражение цикла: ${ loopExpression }`);
+    }
+
+    /**
+     * Сохраняет логи тестов в файл.
+     */
+    private saveLogs() {
+        const timestamp = getFormattedTimestamp();
+        const logFilename = `logs-${ timestamp }.json`;
+        const logPath = path.resolve(config.logging.outputPath, logFilename);
+        const logDir = path.dirname(logPath);
+
+        // Создание директории, если не существует
+        if (!fs.existsSync(logDir)) {
+            fs.mkdirSync(logDir, { recursive: true });
+        }
+
+        fs.writeFileSync(logPath, JSON.stringify(this.testResults, null, 2), 'utf-8');
+        console.log(`📝 Логи тестов сохранены по пути: ${ logPath }`);
+    }
+
+    /**
+     * Отчет о времени выполнения теста.
+     */
+    reportTiming() {
+        const scenarioDuration = this.scenarioEndTime - this.scenarioStartTime;
+        console.log(`⏱ Время выполнения сценария: ${ scenarioDuration } мс`);
+        console.table(Object.entries(this.stepsTiming).map(([ name, times ]) => ({
+            Шаг: name,
+            'Время начала (мс)': times.start,
+            'Время окончания (мс)': times.end,
+            'Длительность (мс)': times.end - times.start,
+        })));
     }
 }

@@ -26,7 +26,6 @@ export class EnhancedGherkinParser {
 
         for (const line of lines) {
             if (line.startsWith('#') || line === '') {
-                // Пропускаем комментарии и пустые строки
                 continue;
             }
 
@@ -41,27 +40,21 @@ export class EnhancedGherkinParser {
                 const step = this.parseStep(line);
 
                 if (step.type === 'if' || step.type === 'loop') {
-                    // Начало нового блока
                     step.steps = [];
                     currentSteps.push(step);
                     currentStepsStack.push(step.steps);
                     currentSteps = step.steps;
                 } else if (step.type === 'else') {
-                    // Переход к блоку Иначе
                     currentStepsStack.pop();
                     currentSteps = currentStepsStack[currentStepsStack.length - 1];
-
-                    // Добавляем блок else
                     step.steps = [];
                     currentSteps.push(step);
                     currentStepsStack.push(step.steps);
                     currentSteps = step.steps;
                 } else if (step.type === 'endif' || step.type === 'endloop') {
-                    // Конец блока
                     currentStepsStack.pop();
                     currentSteps = currentStepsStack[currentStepsStack.length - 1];
                 } else {
-                    // Обычный шаг
                     currentSteps.push(step);
                 }
             }

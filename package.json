@@ -5,16 +5,19 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "test": "ts-node --esm src/index.ts"
+    "preinstall": "npx only-allow pnpm",
+    "playwright-install-browsers": "npx playwright install",
+    "run-tests": "node --loader ts-node/esm src/index.ts"
   },
   "dependencies": {
-    "chai": "^4.3.7",
-    "playwright": "^1.31.0"
+    "chai": "^5.1.2",
+    "config": "^3.3.12",
+    "playwright": "^1.49.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.4",
-    "@types/node": "^18.11.9",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.8.4"
+    "@types/chai": "^5.0.1",
+    "@types/node": "^22.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }
