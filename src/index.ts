@@ -1,5 +1,5 @@
-import { EnhancedGherkinParser } from './framework/parser.js';
-import { TestExecutor } from './framework/executor.js';
+import { EnhancedGherkinParser } from './parser/parser.js';
+import { TestExecutor } from './executor/executor.js';
 import * as path from 'path';
 import { closeBrowser } from './steps/steps.js';
 import { fileURLToPath } from 'node:url';

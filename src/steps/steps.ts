@@ -1,7 +1,7 @@
 // src/steps/steps.ts
 
 import { Browser, BrowserContext, BrowserContextOptions, chromium, Page } from 'playwright';
-import { CartPage, CheckoutPage, InventoryPage, LoginPage, MenuPage } from './pages.js';
+import { CartPage, CheckoutPage, InventoryPage, LoginPage, MenuPage } from '../pom/pages.js';
 import config from '../utils/config.js';
 import path from 'path';
 import { getFormattedTimestamp } from '../utils/timestamp.js';

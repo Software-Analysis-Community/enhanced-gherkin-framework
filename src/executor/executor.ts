@@ -1,4 +1,4 @@
-import { TestCase, TestStep } from './parser.js';
+import { TestCase, TestStep } from '../parser/parser.js';
 import { getVariable, performAction } from '../steps/steps.js';
 import config from '../utils/config.js';
 import path from 'path';
