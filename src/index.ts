@@ -14,7 +14,7 @@ async function main() {
     const executor = new TestExecutor();
 
     const featureFiles = [
-        'complex.enhanced.feature'
+        'new-test.feature'
     ];
 
     for (const featureFile of featureFiles) {
