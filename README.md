@@ -8,7 +8,7 @@ The project is completed during the preparation of Svetlana V. Gerus's bachelor 
 
 ## Authors and Contributors
 
-- **Advisor:** Vladimir A. Parkhomenko  
+- **Advisor and minor contributor:** Vladimir A. Parkhomenko  
   *Senior Lecturer at SPbPU ICSC*
 
 - **Main Contributor:** Svetlana V. Gerus  
