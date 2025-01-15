@@ -171,7 +171,12 @@ export class TestExecutor {
             this.variables[variableName] = item;
 
             if (step.steps) {
-                await this.executeSteps(step.steps, testResult);
+                const updatedSteps = step.steps.map(innerStep => ({
+                    ...innerStep,
+                    parameters: [item]
+                }));
+
+                await this.executeSteps(updatedSteps, testResult);
             }
         }
     }

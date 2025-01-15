@@ -90,11 +90,15 @@ export class EnhancedGherkinParser {
     }
 
     extractActionAndParameters(line: string): { action: string; parameters: string[] } {
-        const regex = /"(.*?)"/g;
+        const regex = /"([^"]+)"|(\d+)/g;
         const parameters = [];
         let match;
         while ((match = regex.exec(line)) !== null) {
-            parameters.push(match[1]);
+            if (match[1] !== undefined) {
+               parameters.push(match[1]);
+            } else if (match[2] !== undefined) {
+                parameters.push(match[2]);
+            }
         }
 
         const action = line.replace(regex, '{}').trim();

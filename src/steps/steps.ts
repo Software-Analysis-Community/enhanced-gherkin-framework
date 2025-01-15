@@ -23,7 +23,7 @@ async function ensureBrowser() {
     const isCI = process.env.CI === 'true';
     if (!browser) {
         browser = await chromium.launch({
-            headless: isCI,
+            headless: true,
             slowMo: isCI ? 0 : 50,
         });
 
@@ -171,6 +171,22 @@ export async function performAction(action: string, parameters: string[]) {
 
         if (action.startsWith('Выйти из системы')) {
             await menuPage.logout();
+            return;
+        }
+
+        if (action.startsWith('Запомнить цену товара')) {
+            const productName = parameters[0];
+            const variableName = parameters[1];
+
+            const price = await inventoryPage.getProductPrice(productName);
+
+            setVariable(variableName, price);
+            return;
+        }
+
+        if (action.startsWith('Должен увидеть количество товаров')) {
+            const expectedCount = parseInt(parameters[0]);
+            await cartPage.checkItemsCount(expectedCount);
             return;
         }
 
