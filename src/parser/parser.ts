@@ -6,7 +6,7 @@ export interface TestStep {
     type: StepType;
     action?: string;
     parameters?: string[];
-    steps?: TestStep[]; // Для вложенных шагов
+    steps?: TestStep[];
 }
 
 export interface TestCase {
@@ -83,7 +83,6 @@ export class EnhancedGherkinParser {
         } else if (actionLine.startsWith('КонецЦикла')) {
             return { type: 'endloop' };
         } else {
-            // Это действие
             const { action, parameters } = this.extractActionAndParameters(actionLine);
             return { type: 'action', action, parameters };
         }

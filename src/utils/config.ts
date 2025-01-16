@@ -1,5 +1,3 @@
-// src/utils/config.ts
-
 import path from 'path';
 import { existsSync, readFileSync } from 'fs';
 
@@ -43,7 +41,6 @@ let config: Config = {
     }
 };
 
-// Загрузка конфигурации из файла, если он существует
 if (existsSync(defaultConfigPath)) {
     const fileConfig = JSON.parse(readFileSync(defaultConfigPath, 'utf-8'));
     config = { ...config, ...fileConfig };

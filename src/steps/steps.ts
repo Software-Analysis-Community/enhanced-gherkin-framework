@@ -1,5 +1,3 @@
-// src/steps/steps.ts
-
 import { Browser, BrowserContext, BrowserContextOptions, chromium, Page } from 'playwright';
 import { CartPage, CheckoutPage, InventoryPage, LoginPage, MenuPage } from '../pom/pages.js';
 import config from '../utils/config.js';
@@ -10,7 +8,6 @@ let browser: Browser | null = null;
 let context: BrowserContext | null = null;
 let page: Page | null = null;
 
-// Экземпляры страниц (POM)
 let loginPage: LoginPage;
 let inventoryPage: InventoryPage;
 let cartPage: CartPage;
@@ -29,7 +26,6 @@ async function ensureBrowser() {
 
         const contextOptions: BrowserContextOptions = {};
 
-        // Настройка записи видео
         if (config.videos.enabled) {
             contextOptions.recordVideo = {
                 dir: path.resolve(process.cwd(), config.videos.path),
@@ -40,10 +36,8 @@ async function ensureBrowser() {
         context = await browser.newContext(contextOptions);
         page = await context.newPage();
 
-        // Начало трассировки, если требуется
         await context.tracing.start({ screenshots: true, snapshots: true });
 
-        // Инициализация POM-классов
         loginPage = new LoginPage(page!);
         inventoryPage = new InventoryPage(page!);
         cartPage = new CartPage(page!);
@@ -190,20 +184,17 @@ export async function performAction(action: string, parameters: string[]) {
             return;
         }
 
-        // Если действие не распознано
         throw new Error(`Неизвестное действие: ${ action }`);
     } catch (error: any) {
         console.error(`❌ Ошибка при выполнении действия "${ action }": ${ error.message }`);
         const timestamp = getFormattedTimestamp();
 
-        // Захват скриншота при ошибке, если включено
         if (config.screenshots.enabled && page) {
             const screenshotPath = path.resolve(process.cwd(), config.screenshots.path, `error-step-${ timestamp }.png`);
             await page.screenshot({ path: screenshotPath });
             console.error(`📸 Скриншот сохранен по пути: ${ screenshotPath }`);
         }
 
-        // Захват видео при ошибке, если включено и настроено на запись только неуспешных тестов
         if (config.videos.enabled && config.videos.recordOn === 'failed' && page) {
             const video = await page.video();
             if (video) {
@@ -213,7 +204,6 @@ export async function performAction(action: string, parameters: string[]) {
             }
         }
 
-        // Повторно выбросить ошибку для обработки на уровне теста
         throw error;
     }
 }

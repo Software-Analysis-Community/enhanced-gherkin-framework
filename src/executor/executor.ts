@@ -53,7 +53,6 @@ export class TestExecutor {
 
         this.testResults.push(testResult);
 
-        // Сохранение логов в файл, если включено
         if (config.logging.enabled) {
             this.saveLogs();
         }
@@ -105,28 +104,22 @@ export class TestExecutor {
             await performAction(action, parameters);
             this.stepsTiming[index].end = Date.now();
 
-            // Логирование
             const parametersString = this.formatParameters(parameters);
             console.log(`✅ Шаг ${ index + 1 }: ${ action }${ parametersString }`);
 
-            // Добавление результата шага
             testResult.steps.push(stepResult);
         } catch (error: any) {
             this.stepsTiming[index].end = Date.now();
 
-            // Форматирование параметров
             const parametersString = this.formatParameters(parameters);
             console.error(`❌ Шаг ${ index + 1 } провален: ${ action }${ parametersString }`);
 
-            // Добавление результата шага с ошибкой
             stepResult.status = 'failed';
             stepResult.error = error.message;
             testResult.steps.push(stepResult);
 
-            // Изменение статуса теста на "failed"
             testResult.status = 'failed';
 
-            // Повторно выбросить ошибку для остановки выполнения теста
             throw error;
         }
     }
@@ -214,7 +207,6 @@ export class TestExecutor {
         const logPath = path.resolve(config.logging.outputPath, logFilename);
         const logDir = path.dirname(logPath);
 
-        // Создание директории, если не существует
         if (!fs.existsSync(logDir)) {
             fs.mkdirSync(logDir, { recursive: true });
         }
