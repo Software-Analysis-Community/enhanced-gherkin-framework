@@ -186,14 +186,23 @@ export class TestExecutor {
             const expectedText = condition.substring(28).replace(/"/g, '');
             const actualTitle = await this.variables['pageTitle'];
             return (actualTitle || '').includes(expectedText);
+        } else if (condition.startsWith('page title contains ')) {
+            const expectedText = condition.substring(20).replace(/"/g, '');
+            const actualTitle = await this.variables['pageTitle'];
+            return (actualTitle || '').includes(expectedText);
         }
         return true;
     }
 
     async getLoopItems(loopExpression: string): Promise<any[]> {
-        const match = loopExpression.match(/(.*?) в \[(.*)]/);
-        if (match) {
-            return match[2].split(',').map(item => item.trim().replace(/"/g, ''));
+        const matchRu = loopExpression.match(/(.*?) в \[(.*)]/);
+        if (matchRu) {
+            return matchRu[2].split(',').map(item => item.trim().replace(/"/g, ''));
+        } else {
+            const matchEn = loopExpression.match(/(.*?) in \[(.*)]/);
+            if (matchEn) {
+                return matchEn[2].split(',').map(item => item.trim().replace(/"/g, ''));
+            }
         }
         throw new Error(`Неверное выражение цикла: ${ loopExpression }`);
     }

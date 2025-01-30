@@ -29,7 +29,7 @@ export class EnhancedGherkinParser {
                 continue;
             }
 
-            if (line.toLowerCase().startsWith('тест:')) {
+            if (line.toLowerCase().startsWith('тест:') || line.toLowerCase().startsWith('test:')) {
                 if (currentTest) {
                     testCases.push(currentTest);
                 }
@@ -70,17 +70,17 @@ export class EnhancedGherkinParser {
     parseStep(line: string): TestStep {
         const actionLine = line.trim();
 
-        if (actionLine.toLowerCase().startsWith('если ')) {
+        if (actionLine.toLowerCase().startsWith('если ') || actionLine.toLowerCase().startsWith('if ')) {
             const condition = actionLine.substring(4).trim();
             return { type: 'if', action: condition, parameters: [] };
-        } else if (actionLine.toLowerCase().startsWith('иначе')) {
+        } else if (actionLine.toLowerCase().startsWith('иначе') || actionLine.toLowerCase().startsWith('else')) {
             return { type: 'else' };
-        } else if (actionLine.toLowerCase().startsWith('конецесли')) {
+        } else if (actionLine.toLowerCase().startsWith('конецесли') || actionLine.toLowerCase().startsWith('endif')) {
             return { type: 'endif' };
-        } else if (actionLine.toLowerCase().startsWith('для каждого ')) {
+        } else if (actionLine.toLowerCase().startsWith('для каждого ') || actionLine.toLowerCase().startsWith('for each ')) {
             const loopExpression = actionLine.substring(11).trim();
             return { type: 'loop', action: loopExpression, parameters: [] };
-        } else if (actionLine.toLowerCase().startsWith('конеццикла')) {
+        } else if (actionLine.toLowerCase().startsWith('конеццикла') || actionLine.toLowerCase().startsWith('endloop')) {
             return { type: 'endloop' };
         } else {
             const { action, parameters } = this.extractActionAndParameters(actionLine);

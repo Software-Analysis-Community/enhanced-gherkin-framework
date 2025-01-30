@@ -315,6 +315,12 @@ describe('TestExecutor', () => {
             expect(result).toBe(true);
         });
 
+        it('should evaluate page title condition', async () => {
+            executor.variables.pageTitle = 'Welcome Page';
+            const result = await executor['evaluateCondition']('page title contains Welcome');
+            expect(result).toBe(true);
+        });
+
         it('should return true for non-page title conditions', async () => {
             const condition = 'другие условия';
 

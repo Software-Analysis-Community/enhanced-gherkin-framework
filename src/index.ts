@@ -12,7 +12,9 @@ async function main() {
     const executor = new TestExecutor();
 
     const featureFiles = [
-        'new-test.feature'
+        // 'scenario1.en.feature',
+        // 'scenario2.en.feature',
+        'scenario3.en.feature'
     ];
 
     for (const featureFile of featureFiles) {
