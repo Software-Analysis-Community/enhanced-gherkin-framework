@@ -1,9 +1,9 @@
-import { TestCase, TestStep } from '../parser/parser.js';
-import { getVariable, performAction } from '../steps/steps.js';
-import config from '../utils/config.js';
+import { TestCase, TestStep } from '../parser/parser';
+import { performAction } from '../steps/steps';
+import config from '../utils/config';
 import path from 'path';
 import * as fs from 'node:fs';
-import { getFormattedTimestamp } from '../utils/timestamp.js';
+import { getFormattedTimestamp } from '../utils/timestamp';
 
 interface StepResult {
     stepNumber: number;
@@ -166,7 +166,7 @@ export class TestExecutor {
             if (step.steps) {
                 const updatedSteps = step.steps.map(innerStep => ({
                     ...innerStep,
-                    parameters: [item]
+                    parameters: [ item ]
                 }));
 
                 await this.executeSteps(updatedSteps, testResult);
@@ -183,8 +183,8 @@ export class TestExecutor {
 
     async evaluateCondition(condition: string): Promise<boolean> {
         if (condition.startsWith('заголовок страницы содержит ')) {
-            const expectedText = condition.substring(26).replace(/"/g, '');
-            const actualTitle = await getVariable('pageTitle');
+            const expectedText = condition.substring(28).replace(/"/g, '');
+            const actualTitle = await this.variables['pageTitle'];
             return (actualTitle || '').includes(expectedText);
         }
         return true;
@@ -221,6 +221,7 @@ export class TestExecutor {
     reportTiming() {
         const scenarioDuration = this.scenarioEndTime - this.scenarioStartTime;
         console.log(`⏱ Время выполнения сценария: ${ scenarioDuration } мс`);
+        // noinspection NonAsciiCharacters
         console.table(Object.entries(this.stepsTiming).map(([ name, times ]) => ({
             Шаг: name,
             'Время начала (мс)': times.start,

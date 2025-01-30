@@ -1,13 +1,11 @@
-import { EnhancedGherkinParser } from './parser/parser.js';
-import { TestExecutor } from './executor/executor.js';
+import { EnhancedGherkinParser } from './parser/parser';
+import { TestExecutor } from './executor/executor';
 import * as path from 'path';
-import { closeBrowser } from './steps/steps.js';
-import { fileURLToPath } from 'node:url';
-import config from './utils/config.js';
-import * as fs from 'node:fs';
+import { closeBrowser } from './steps/steps';
+import config from './utils/config';
+import * as fs from 'fs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = process.cwd();
 
 async function main() {
     const parser = new EnhancedGherkinParser();

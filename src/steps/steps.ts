@@ -1,8 +1,8 @@
 import { Browser, BrowserContext, BrowserContextOptions, chromium, Page } from 'playwright';
-import { CartPage, CheckoutPage, InventoryPage, LoginPage, MenuPage } from '../pom/pages.js';
-import config from '../utils/config.js';
+import { CartPage, CheckoutPage, InventoryPage, LoginPage, MenuPage } from '../pom/pages';
+import config from '../utils/config';
 import path from 'path';
-import { getFormattedTimestamp } from '../utils/timestamp.js';
+import { getFormattedTimestamp } from '../utils/timestamp';
 
 let browser: Browser | null = null;
 let context: BrowserContext | null = null;
