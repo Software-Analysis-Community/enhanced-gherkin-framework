@@ -7,7 +7,7 @@ describe('getFormattedTimestamp', () => {
         // @ts-ignore
         global.Date = class extends RealDate {
             constructor() {
-                super('2024-01-15T09:30:45'); // Дефолтное значение для всех тестов
+                super('2024-01-15T09:30:45');
             }
 
             static now() {
@@ -21,7 +21,6 @@ describe('getFormattedTimestamp', () => {
     });
 
     it('should handle single-digit values', () => {
-        // Переопределяем Date для конкретного теста
         // @ts-ignore
         global.Date = class extends RealDate {
             constructor() {

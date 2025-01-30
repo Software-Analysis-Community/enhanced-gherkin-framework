@@ -15,7 +15,6 @@ jest.mock('../pom/pages', () => {
     };
 });
 
-// Создаем моки для всех страниц
 const loginPageMock = {
     open: jest.fn(),
     login: jest.fn(),
@@ -48,7 +47,6 @@ const menuPageMock = {
     logout: jest.fn(),
 };
 
-// Подменяем поведение конструкторов классов
 (LoginPage as jest.Mock).mockImplementation(() => loginPageMock);
 (InventoryPage as jest.Mock).mockImplementation(() => inventoryPageMock);
 (CartPage as jest.Mock).mockImplementation(() => cartPageMock);
@@ -192,16 +190,13 @@ describe('TestExecutor', () => {
 
             await executor.executeTestCase(testCase);
 
-            // Проверяем, что performAction не был вызван для шага 'else'
             expect(mockPerformAction).not.toHaveBeenCalled();
 
-            // Проверяем, что тестовый результат помечен как 'passed' без шагов
             expect(executor['testResults']).toHaveLength(1);
             const result = executor['testResults'][0];
             expect(result.status).toBe('passed');
             expect(result.steps).toHaveLength(0);
 
-            // Проверяем, что в консоль выводится сообщение о прохождении теста
             expect(console.log).toHaveBeenCalledWith(expect.stringContaining('успешно пройден'));
         });
 
@@ -218,24 +213,20 @@ describe('TestExecutor', () => {
 
             await executor.executeTestCase(testCase);
 
-            // Проверяем, что performAction был вызван для шагов до и после 'endif'
             expect(mockPerformAction).toHaveBeenCalledTimes(2);
             expect(mockPerformAction).toHaveBeenNthCalledWith(1, 'Действие: Шаг до endif', []);
             expect(mockPerformAction).toHaveBeenNthCalledWith(2, 'Действие: Шаг после endif', []);
 
-            // Проверяем, что тестовый результат помечен как 'passed'
             expect(executor['testResults']).toHaveLength(1);
             const result = executor['testResults'][0];
             expect(result.status).toBe('passed');
 
-            // Проверяем, что шаги записаны корректно (без учета 'endif')
             expect(result.steps).toHaveLength(2);
             expect(result.steps[0].action).toBe('Действие: Шаг до endif');
             expect(result.steps[0].status).toBe('passed');
             expect(result.steps[1].action).toBe('Действие: Шаг после endif');
             expect(result.steps[1].status).toBe('passed');
 
-            // Проверяем, что в консоль выводится соответствующее сообщение
             expect(console.log).toHaveBeenCalledWith(expect.stringContaining('успешно пройден'));
         });
 
@@ -252,24 +243,20 @@ describe('TestExecutor', () => {
 
             await executor.executeTestCase(testCase);
 
-            // Проверяем, что performAction был вызван для шагов до и после 'endloop'
             expect(mockPerformAction).toHaveBeenCalledTimes(2);
             expect(mockPerformAction).toHaveBeenNthCalledWith(1, 'Действие: Шаг до endloop', []);
             expect(mockPerformAction).toHaveBeenNthCalledWith(2, 'Действие: Шаг после endloop', []);
 
-            // Проверяем, что тестовый результат помечен как 'passed'
             expect(executor['testResults']).toHaveLength(1);
             const result = executor['testResults'][0];
             expect(result.status).toBe('passed');
 
-            // Проверяем, что шаги записаны корректно (без учета 'endloop')
             expect(result.steps).toHaveLength(2);
             expect(result.steps[0].action).toBe('Действие: Шаг до endloop');
             expect(result.steps[0].status).toBe('passed');
             expect(result.steps[1].action).toBe('Действие: Шаг после endloop');
             expect(result.steps[1].status).toBe('passed');
 
-            // Проверяем, что в консоль выводится соответствующее сообщение
             expect(console.log).toHaveBeenCalledWith(expect.stringContaining('успешно пройден'));
         });
 
