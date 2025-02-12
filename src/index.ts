@@ -6,19 +6,26 @@ import config from './utils/config';
 import * as fs from 'fs';
 
 const __dirname = process.cwd();
+const FEATURES_DIR = path.join(__dirname, 'features');
 
 async function main() {
     const parser = new EnhancedGherkinParser();
     const executor = new TestExecutor();
 
-    const featureFiles = [
-        // 'scenario1.en.feature',
-        // 'scenario2.en.feature',
-        'scenario3.en.feature'
-    ];
+    let featureFiles: string[] = [];
+
+    if (featureFiles.length === 0) {
+        featureFiles = fs.readdirSync(FEATURES_DIR)
+            .filter(file => file.endsWith('.feature'));
+    }
 
     for (const featureFile of featureFiles) {
-        const featurePath = path.resolve(__dirname, '../features/', featureFile);
+        const featurePath = path.join(FEATURES_DIR, featureFile);
+        if (!fs.existsSync(featurePath)) {
+            console.warn(`Файл ${featurePath} не найден, пропускаем.`);
+            continue;
+        }
+
         const testCases = parser.parseFeature(featurePath);
 
         for (const testCase of testCases) {
@@ -53,5 +60,4 @@ function ensureDirectories() {
 }
 
 ensureDirectories();
-
 main();

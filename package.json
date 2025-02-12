@@ -6,7 +6,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "playwright-install-browsers": "npx playwright install",
-    "run-tests": "node -r ts-node/register src/index.ts",
+    "run-tests": "tsx src/index.ts",
     "test": "jest"
   },
   "dependencies": {
@@ -26,6 +26,7 @@
     "ts-jest": "^29.2.5",
     "ts-mockito": "^2.6.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }
 }
