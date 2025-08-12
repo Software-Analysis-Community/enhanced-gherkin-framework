@@ -1,0 +1,93 @@
+[
+  {
+    "testName": "Массовое добавление товаров в корзину",
+    "steps": [
+      {
+        "stepNumber": 1,
+        "action": "Открыть страницу {}",
+        "parameters": [
+          "https://www.saucedemo.com"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 2,
+        "action": "Ввести имя пользователя {}",
+        "parameters": [
+          "standard_user"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 3,
+        "action": "Ввести пароль {}",
+        "parameters": [
+          "secret_sauce"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 4,
+        "action": "Нажать на кнопку входа",
+        "parameters": [],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 1,
+        "action": "Добавить товар в корзину {товар}",
+        "parameters": [
+          "Sauce Labs Backpack"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 1,
+        "action": "Добавить товар в корзину {товар}",
+        "parameters": [
+          "Sauce Labs Bike Light"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 1,
+        "action": "Добавить товар в корзину {товар}",
+        "parameters": [
+          "Sauce Labs Bolt T-Shirt"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 1,
+        "action": "Добавить товар в корзину {товар}",
+        "parameters": [
+          "Sauce Labs Fleece Jacket"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 1,
+        "action": "Добавить товар в корзину {товар}",
+        "parameters": [
+          "Sauce Labs Onesie"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 6,
+        "action": "Открыть корзину",
+        "parameters": [],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 7,
+        "action": "Должен увидеть количество товаров {}",
+        "parameters": [
+          "5"
+        ],
+        "status": "passed"
+      }
+    ],
+    "status": "passed",
+    "durationMs": 3371
+  }
+]

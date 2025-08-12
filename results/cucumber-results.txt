@@ -1,0 +1,11 @@
+1 scenario (1 passed)
+7 steps (7 passed)
+0m02.624s (executing steps: 0m02.135s)
+
+1 scenario (1 passed)
+16 steps (16 passed)
+0m03.908s (executing steps: 0m03.472s)
+
+1 scenario (1 passed)
+25 steps (25 passed)
+0m04.217s (executing steps: 0m03.881s)

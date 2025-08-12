@@ -1,0 +1,77 @@
+[
+  {
+    "testName": "Проверка итоговой цены при авторизации",
+    "steps": [
+      {
+        "stepNumber": 1,
+        "action": "Открыть страницу {}",
+        "parameters": [
+          "https://www.saucedemo.com"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 2,
+        "action": "Ввести имя пользователя {}",
+        "parameters": [
+          "standard_user"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 3,
+        "action": "Ввести пароль {}",
+        "parameters": [
+          "secret_sauce"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 4,
+        "action": "Нажать на кнопку входа",
+        "parameters": [],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 5,
+        "action": "Добавить товар в корзину {}",
+        "parameters": [
+          "Sauce Labs Backpack"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 6,
+        "action": "Запомнить цену товара {} как {price1}",
+        "parameters": [
+          "Sauce Labs Backpack"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 7,
+        "action": "Добавить товар в корзину {}",
+        "parameters": [
+          "Sauce Labs Bike Light"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 8,
+        "action": "Запомнить цену товара {} как {price2}",
+        "parameters": [
+          "Sauce Labs Bike Light"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 9,
+        "action": "Открыть корзину",
+        "parameters": [],
+        "status": "passed"
+      }
+    ],
+    "status": "passed",
+    "durationMs": 3575
+  }
+]

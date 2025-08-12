@@ -1,0 +1,47 @@
+[
+  {
+    "testName": "Авторизация пользователя",
+    "steps": [
+      {
+        "stepNumber": 1,
+        "action": "Открыть страницу {}",
+        "parameters": [
+          "https://www.saucedemo.com"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 2,
+        "action": "Ввести имя пользователя {}",
+        "parameters": [
+          "standard_user"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 3,
+        "action": "Ввести пароль {}",
+        "parameters": [
+          "secret_sauce"
+        ],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 4,
+        "action": "Нажать на кнопку входа",
+        "parameters": [],
+        "status": "passed"
+      },
+      {
+        "stepNumber": 5,
+        "action": "Должен увидеть заголовок {}",
+        "parameters": [
+          "Products"
+        ],
+        "status": "passed"
+      }
+    ],
+    "status": "passed",
+    "durationMs": 2982
+  }
+]
